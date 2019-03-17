@@ -1,0 +1,28 @@
+.shopList .shopName {
+    color: magenta;
+    font-family: 'Courier New', Courier, monospace;
+    text-align: center;
+}
+.shopList .listShop {
+    width: 100%;
+    border-collapse: collapse;
+}
+.shopList .listShop td {
+    width: 25%;
+    text-align: center;
+    font-weight: bold;
+    font-size: 30px;
+    border: 2px solid black;
+}
+.shopList .listShop .productName {
+    background-color: aqua;
+}
+.shopList .listShop .productPrice {
+    background-color: bisque;
+}
+.shopList .listShop .productNumber {
+    background-color: chartreuse;
+}
+.shopList .listShop .productIMG {
+    max-width: 40%;
+}

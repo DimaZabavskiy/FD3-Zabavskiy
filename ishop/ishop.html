@@ -4,9 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>ishop</title>
 </head>
 <body>
+    <div id="container"></div>
+
+    <script src="https://unpkg.com/react@15/dist/react.js"></script> 
+    <script src="https://unpkg.com/react-dom@15/dist/react-dom.js"></script>
     
+    <script src="shopList.js"></script>
+    <link rel="stylesheet" type="text/css" href="shopList.css" />
+
+    <script>
+    var shopName = 'Магазин спортивного питания "ПитСпорт"';
+
+    var listArr = [
+        {code: 1, name: 'Zero Bar', price: '5$', URL: 'https://fizcult.by/upload/iblock/ed7/ed7b5694f7c34570c2876b7e2a40e655.png', number: 100},
+        {code: 2, name: 'Prot Bar', price: '4$', URL: 'https://fizcult.by/upload/iblock/1df/1df481c930c0cef5e6cf769b2bc08ff2.jpg', number: 50},
+        {code: 3, name: 'Record Bar', price: '7$', URL: 'https://fizcult.by/upload/iblock/f15/f151aa1c0dfa3fee8a39cf5172c98405.jpg', number: 150},
+    ];
+
+    ReactDOM.render(
+      React.createElement(ShopList,{name:shopName,list:listArr}), 
+      document.getElementById('container') 
+    );
+    
+    </script>
+
+
 </body>
 </html>
