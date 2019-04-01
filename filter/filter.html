@@ -4,10 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Фильтр</title>
 </head>
 <body>
-    <link rel="stylesheet" href="filter.css">
+    <div id="container"></div>
+    
+    <script src="https://unpkg.com/react@15/dist/react.js"></script> 
+    <script src="https://unpkg.com/react-dom@15/dist/react-dom.js"></script>
+
     <script src="filter.js"></script>
+    <link rel="stylesheet" href="filter.css">
+
+    <script>
+    var strArr = [{code:1, text:'напиткипокрепче'}, {code:2, text:'словапокороче'}, {code:3, text:'такпрощетаклегче'},
+    {code:4, text:'стираютсяночи'}, {code:5, text:'звонкибезответа'}, {code:6, text:'словаиулыбки'},
+    {code:7, text:'вчерашнеелето'}, {code:8, text:'смешнаяошибка'},
+    ];
+
+    ReactDOM.render(
+        React.createElement(filter, {stringArr: strArr}),
+        document.getElementById('container')
+    );
+    </script>
+
 </body>
 </html>

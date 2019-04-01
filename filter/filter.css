@@ -1,0 +1,6 @@
+.stringList {
+    border: solid 1px black;
+    width: 50%;
+    max-height: 100px;
+    overflow: auto;
+}
