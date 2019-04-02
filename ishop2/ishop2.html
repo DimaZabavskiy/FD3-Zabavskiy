@@ -18,7 +18,8 @@
     <link rel="stylesheet" href="ishop2.css">
 
     <script>
-        var shopName = 'Магазин спортивного питания "ПитСпорт"';
+
+        var headT = {name:'Name', price:'Price', url:'URL', quantity:'Quantity', control:'Control'};
 
         var listArr = [
             {code: 1, name: 'Zero Bar', price: '5$', URL: 'https://fizcult.by/upload/iblock/ed7/ed7b5694f7c34570c2876b7e2a40e655.png', number: 100},
@@ -27,8 +28,8 @@
         ];
 
         ReactDOM.render(
-        React.createElement(ShopList,{name:shopName,list:listArr}), 
-        document.getElementById('container') 
+            React.createElement(ShopList,{headTable: headT, list:listArr}), 
+            document.getElementById('container') 
         );
     
     </script>
