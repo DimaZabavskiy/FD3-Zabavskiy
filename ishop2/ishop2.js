@@ -2,6 +2,11 @@
 var tableItem = React.createClass({
     displayName: 'tableItem',
 
+    getInitialState: function() {
+        return {
+            deleteNumber: null,
+        }
+    },
     
     turnColor: function() {
         this.props.cbTurnColor(this.props.code);

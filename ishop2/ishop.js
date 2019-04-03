@@ -15,6 +15,11 @@ var ShopList = React.createClass({
 
     deleteString: function(arg) {
         this.setState({deleteNumber: arg});
+        for(var i = 0; i < this.props.list.length; i++) {
+            if(arg == this.props.list[i].code) {   
+                this.props.list.splice(i, 1);
+            }
+        }
     },
     
     render: function() {
@@ -28,18 +33,8 @@ var ShopList = React.createClass({
                 React.DOM.th(null, this.props.headTable.control),
             )
         );
-
-        var receivedArr = this.props.list;
-
-        if (this.state.deleteNumber) {
-            for(var i = 0; i < receivedArr.length; i++) {
-                if(this.state.deleteNumber == receivedArr[i].code) {
-                    receivedArr.splice(i, 1);
-                }
-            }
-        }
         
-        var tablePos = receivedArr.map ( v =>
+        var tablePos = this.props.list.map ( v =>
             React.createElement(tableItem, {key:v.code, code: v.code,
                 name: v.name, price: v.price,
                 URL: v.URL, number: v.number,
