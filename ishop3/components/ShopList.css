@@ -1,0 +1,7 @@
+.listShop {
+    border-collapse: collapse;
+}
+.listShop td, th {
+    border: solid black 1px;
+    border-collapse: collapse;
+}

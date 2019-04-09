@@ -1,0 +1,12 @@
+.listShop {
+    border-collapse: collapse;
+}
+.listShop td, th {
+    border: solid black 1px;
+    border-collapse: collapse;
+}.redClass {
+    background-color: lightcoral;
+}.valid {
+    color: red;
+}
+/*# sourceMappingURL=bundle.css.map*/
