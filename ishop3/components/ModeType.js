@@ -6,6 +6,16 @@ import './ModeType.css';
 class ModeType extends React.Component {
 
     state = {
+        getName: this.props.correctName,
+        name: null,
+        getPrice: this.props.correctPrice,
+        price: null,
+        getURL: this.props.correctURL,
+        URL: null,
+        getQuantity: this.props.correctQuantity,
+        quantity: null,
+        startCorrect: false,
+        correctName: null,
         validCorrectName: null,
         validCorrectPrice: null,
         validCorrectURL: null,
@@ -13,7 +23,8 @@ class ModeType extends React.Component {
         validNewName: null,
         validNewPrice: null,
         validNewURL: null,
-        validNewQuantity: null
+        validNewQuantity: null,
+        checkValid: false
     }
 
     addProduct = () => {
@@ -28,6 +39,11 @@ class ModeType extends React.Component {
 
     cancelProduct = () => {
         this.props.cbCancelNew();
+        if (this.state.startCorrect) { 
+            this.setState({startCorrect: false, name: this.props.correctName, price: this.props.correctPrice,
+                URL: this.props.correctURL, quantity: this.props.correctQuantity, 
+                validCorrectName: null, validCorrectPrice: null, validCorrectURL: null, validCorrectQuantity: null,});
+        }
     }
     addNewProduct = () => {
         if (!this.state.validNewName && !this.state.validNewPrice && !this.state.validNewURL &&
@@ -53,69 +69,121 @@ class ModeType extends React.Component {
             this.props.cbCorrectProduct(correctProduct);
         }
     }
-    validName = () => {
+
+
+
+    validName = (EO) => {
+        this.props.cbSetChanged();
+        
+        if (this.state.getName !== this.props.correctName) {
+            this.setState({getName: this.props.correctName})
+        }
+
+        this.setState({name: EO.target.value, startCorrect: true})
+
+
         if (document.getElementById('correctName').value == 0) {
-            this.setState({validCorrectName: true});
+            this.setState({validCorrectName: true, checkValid: true});
         } else {
-            this.setState({validCorrectName: null});
+            this.setState({validCorrectName: null, checkValid: false});
         }
     }
-    validPrice = () => {
+    validPrice = (EO) => {
+        this.props.cbSetChanged();
+
+        if (this.state.getPrice !== this.props.correctPrice) {
+            this.setState({getPrice: this.props.correctPrice})
+        }
+
+        this.setState({price: EO.target.value, startCorrect: true})
+
         if (document.getElementById('correctPrice').value == 0) {
-            this.setState({validCorrectPrice: true});
+            this.setState({validCorrectPrice: true, checkValid: true});
         } else {
-            this.setState({validCorrectPrice: null});
+            this.setState({validCorrectPrice: null, checkValid: false});
         }
     }
-    validURL = () => {
+    validURL = (EO) => {
+        this.props.cbSetChanged();
+
+        if (this.state.getURL !== this.props.correctURL) {
+            this.setState({getURL: this.props.correctURL})
+        }
+
+        this.setState({URL: EO.target.value, startCorrect: true})
+        
         if (document.getElementById('correctURL').value == 0) {
-            this.setState({validCorrectURL: true});
+            this.setState({validCorrectURL: true, checkValid: true});
         } else {
-            this.setState({validCorrectURL: null});
+            this.setState({validCorrectURL: null, checkValid: false});
         }
     }
-    validQuantity = () => {
+    validQuantity = (EO) => {
+        this.props.cbSetChanged();
+
+        if (this.state.getQuantity !== this.props.correctQuantity) {
+            this.setState({getQuantity: this.props.correctQuantity})
+        }
+
+        this.setState({quantity: EO.target.value, startCorrect: true})
+
         if (document.getElementById('correctQuantity').value == 0) {
-            this.setState({validCorrectQuantity: true});
+            this.setState({validCorrectQuantity: true, checkValid: true});
         } else {
-            this.setState({validCorrectQuantity: null});
+            this.setState({validCorrectQuantity: null, checkValid: false});
         }
     }
+
+
+
     validNewName = () => {
         if (document.getElementById('newName').value == 0) {
-            this.setState({validNewName: true});
+            this.setState({validNewName: true, checkValid: true});
         } else {
-            this.setState({validNewName: null});
+            this.setState({validNewName: null, checkValid: false});
         }
     }
     validNewPrice = () => {
         if (document.getElementById('newPrice').value == 0) {
-            this.setState({validNewPrice: true});
+            this.setState({validNewPrice: true, checkValid: true});
         } else {
-            this.setState({validNewPrice: null});
+            this.setState({validNewPrice: null, checkValid: false});
         }
     }
     validNewURL = () => {
         if (document.getElementById('newURL').value == 0) {
-            this.setState({validNewURL: true});
+            this.setState({validNewURL: true, checkValid: true});
         } else {
-            this.setState({validNewURL: null});
+            this.setState({validNewURL: null, checkValid: false});
         }
     }
     validNewQuantity = () => {
         if (document.getElementById('newQuantity').value == 0) {
-            this.setState({validNewQuantity: true});
+            this.setState({validNewQuantity: true, checkValid: true});
         } else {
-            this.setState({validNewQuantity: null});
+            this.setState({validNewQuantity: null, checkValid: false});
         }
     }
 
     render () {
+        if (this.state.validNewName || this.state.validNewPrice || this.state.validNewURL 
+            || this.state.validNewQuantity) {
+            var buttonClass1 = "unActive";
+        } else {
+            var buttonClass1 = "usual";
+        }
+        if (this.state.validCorrectQuantity || this.state.validCorrectURL
+            || this.state.validCorrectName || this.state.validCorrectPrice) {
+            var buttonClass2 = "unActive";
+        } else {
+            var buttonClass2 = "usual";
+        }
+        
         return (
             <div>
                 <input type='button' value='New product' onClick={this.addProduct} />
                 {
-                    (this.props.chosenProdName) &&
+                    (this.props.chosenProdName && !this.props.correctCanged) &&
                     <div>
                         {'name: ' + this.props.chosenProdName + '; price: ' + this.props.chosenProdPrice}
                     </div>
@@ -123,31 +191,31 @@ class ModeType extends React.Component {
                 {
                     (this.props.addNewProduct) &&
                     <div>
-                        {'Name: '} <input type='text' id='newName' onBlur={this.validNewName} />
+                        {'Name: '} <input type='text' id='newName' onChange={this.validNewName} />
                         {
                             (this.state.validNewName) &&
                             <span className='valid'>{'Please, fill the field!'}</span>
                         }
                         <br />
-                        {'Price: '} <input type='text' id='newPrice' onBlur={this.validNewPrice} />
+                        {'Price: '} <input type='text' id='newPrice' onChange={this.validNewPrice} />
                         {
                             (this.state.validNewPrice) &&
                             <span className='valid'>{'Please, fill the field!'}</span>
                         }
                         <br />
-                        {'URL: '} <input type='text' id='newURL' onBlur={this.validNewURL} />
+                        {'URL: '} <input type='text' id='newURL' onChange={this.validNewURL} />
                         {
                             (this.state.validNewURL) &&
                             <span className='valid'>{'Please, fill the field!'}</span>
                         }
                         <br />
-                        {'Quantity: '} <input type='text' id='newQuantity' onBlur={this.validNewQuantity} />
+                        {'Quantity: '} <input type='text' id='newQuantity' onChange={this.validNewQuantity} />
                         {
                             (this.state.validNewQuantity) &&
                             <span className='valid'>{'Please, fill the field!'}</span>
                         }
                         <br />
-                        <input type='button' value='Add' onClick={this.addNewProduct} />
+                        <input type='button' className={buttonClass1} value='Add' onClick={this.addNewProduct} />
                         <input type='button' value='Cancel' onClick={this.cancelProduct} />
 
                     </div>
@@ -155,35 +223,35 @@ class ModeType extends React.Component {
                 {
                     (this.props.correct)&&
                     <div>
-                        {'Name: '} <input type='text' id='correctName' defaultValue={this.props.correctName}
-                        onBlur={this.validName} />
+                        {'Name: '} <input type='text' id='correctName' value={(this.state.getName === this.props.correctName)?this.state.name:this.props.correctName }
+                        onChange={this.validName} />
                         {
                             (this.state.validCorrectName) &&
                             <span className='valid'>{'Please, fill the field!'}</span>
                         }
                         <br />
-                        {'Price: '} <input type='text' id='correctPrice' defaultValue={this.props.correctPrice}
-                        onBlur={this.validPrice}  />
+                        {'Price: '} <input type='text' id='correctPrice' value={(this.state.getPrice === this.props.correctPrice)?this.state.price:this.props.correctPrice }
+                        onChange={this.validPrice}  />
                         {
                             (this.state.validCorrectPrice) &&
                             <span className='valid'>{'Please, fill the field!'}</span>
                         }
                         <br />
-                        {'URL: '} <input type='text' id='correctURL' defaultValue={this.props.correctURL}
-                        onBlur={this.validURL}  />
+                        {'URL: '} <input type='text' id='correctURL' value={(this.state.getURL === this.props.correctURL)?this.state.URL:this.props.correctURL }
+                        onChange={this.validURL}  />
                         {
                             (this.state.validCorrectURL) &&
                             <span className='valid'>{'Please, fill the field!'}</span>
                         }
                         <br />
-                        {'Quantity: '} <input type='text' id='correctQuantity' defaultValue={this.props.correctQuantity}
-                        onBlur={this.validQuantity}  />
+                        {'Quantity: '} <input type='text' id='correctQuantity' value={(this.state.getQuantity === this.props.correctQuantity)?this.state.quantity:this.props.correctQuantity }
+                        onChange={this.validQuantity}  />
                         {
                             (this.state.validCorrectQuantity) &&
                             <span className='valid'>{'Please, fill the field!'}</span>
                         }
                         <br />
-                        <input type='button' value='Save' onClick={this.correctProduct} />
+                        <input type='button' className={buttonClass2} value='Save' onClick={this.correctProduct} />
                         <input type='button' value='Cancel' onClick={this.cancelProduct} />
                     </div>
                 }

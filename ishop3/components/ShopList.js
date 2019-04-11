@@ -15,7 +15,8 @@ class ShopList extends React.Component {
         chosenProdPrice: null,
         addNewProduct: false,
         correct: false,
-        correctName: false,
+        correctCanged: false,
+        correctName: null,
         correctPrice: false,
         correctURL: false,
         correctQuantity: false,
@@ -28,16 +29,20 @@ class ShopList extends React.Component {
         }
     }
     cancelNew = () => {
-        this.setState({addNewProduct: false, correct: false})
+        this.setState({addNewProduct: false, correct: false, correctCanged: false})
     }
     addNewProduct = (arg) => {
         this.props.list.push(arg);
         this.setState({addNewProduct: false})
     }
 
+    setChanged = () => {
+        this.setState({correctCanged: true});        
+    }
+
     correct = (code) => {
-        if (!this.state.addNewProduct) {
-            this.setState({correct: true, chosenProdName: false});
+        if (!this.state.addNewProduct && !this.state.correctCanged) {
+            this.setState({correct: code, chosenProdName: null, chosenProdPrice: null});
     
             for (var i = 0; i < this.props.list.length; i++) {
                 for (var key in this.props.list[i]) {
@@ -60,16 +65,18 @@ class ShopList extends React.Component {
                 }
             }
         }
-        this.setState({correct: false});
+        this.setState({correct: false, correctCanged: false});
     }
 
-    turnColor = (arg) => {
-        if (!this.state.addNewProduct && !this.state.correct) {
+    turnColor = (arg, bool) => {
+        if (!this.state.addNewProduct && !this.state.correctCanged) {
             this.setState({makeColor: arg});
-            for (var i = 0; i < this.props.list.length; i++) {
-                if (this.props.list[i].code == arg) {
-                    this.setState({chosenProdName: this.props.list[i].name});
-                    this.setState({chosenProdPrice: this.props.list[i].price});
+            if (bool) {
+                this.setState({correct: false});
+                for (var i = 0; i < this.props.list.length; i++) {
+                    if (this.props.list[i].code == arg) {
+                        this.setState({chosenProdName: this.props.list[i].name, chosenProdPrice: this.props.list[i].price});
+                    }
                 }
             }
         }
@@ -117,10 +124,12 @@ class ShopList extends React.Component {
                 </table>
                 <ModeType chosenProdName={this.state.chosenProdName} chosenProdPrice={this.state.chosenProdPrice}
                 cbAddProduct={this.addProduct} addNewProduct={this.state.addNewProduct}
-                cbCancelNew={this.cancelNew} cbAddNewProduct={this.addNewProduct} correct={this.state.correct}
+                cbCancelNew={this.cancelNew} cbAddNewProduct={this.addNewProduct}
+                correct={this.state.correct} correctCanged={this.state.correctCanged}
                 correctName={this.state.correctName} correctPrice={this.state.correctPrice}
                 correctURL={this.state.correctURL} correctQuantity={this.state.correctQuantity}
-                correctCode={this.state.correctCode} cbCorrectProduct={this.correctProduct} />
+                correctCode={this.state.correctCode} cbCorrectProduct={this.correctProduct}
+                cbSetChanged={this.setChanged} />
             </div>
         )
     }

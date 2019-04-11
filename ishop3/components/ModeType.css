@@ -1,3 +1,7 @@
 .valid {
     color: red;
 }
+.unActive {
+    color: lightgray;
+    font-style: italic;
+}

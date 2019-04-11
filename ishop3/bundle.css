@@ -9,4 +9,8 @@
 }.valid {
     color: red;
 }
+.unActive {
+    background-color: bisque;
+    color: grey;
+}
 /*# sourceMappingURL=bundle.css.map*/

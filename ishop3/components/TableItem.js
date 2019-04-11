@@ -9,7 +9,7 @@ class TableItem extends React.Component {
     }
 
     turnColor = () => {
-        this.props.cbTurnColor(this.props.code);
+        this.props.cbTurnColor(this.props.code, true);
     }
     deleteStr = (EO) => {
         EO.stopPropagation();
@@ -19,6 +19,7 @@ class TableItem extends React.Component {
     correct = (EO) => {
         EO.stopPropagation();
         this.props.cbCorrect(this.props.code);
+        this.props.cbTurnColor(this.props.code, false);
     }
 
     render() {

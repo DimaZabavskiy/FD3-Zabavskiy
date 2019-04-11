@@ -25414,7 +25414,8 @@ var ShopList = function (_React$Component) {
             chosenProdPrice: null,
             addNewProduct: false,
             correct: false,
-            correctName: false,
+            correctCanged: false,
+            correctName: null,
             correctPrice: false,
             correctURL: false,
             correctQuantity: false,
@@ -25424,13 +25425,15 @@ var ShopList = function (_React$Component) {
                 _this.setState({ makeColor: null, addNewProduct: true, chosenProdName: false });
             }
         }, _this.cancelNew = function () {
-            _this.setState({ addNewProduct: false, correct: false });
+            _this.setState({ addNewProduct: false, correct: false, correctCanged: false });
         }, _this.addNewProduct = function (arg) {
             _this.props.list.push(arg);
             _this.setState({ addNewProduct: false });
+        }, _this.setChanged = function () {
+            _this.setState({ correctCanged: true });
         }, _this.correct = function (code) {
-            if (!_this.state.addNewProduct) {
-                _this.setState({ correct: true, chosenProdName: false });
+            if (!_this.state.addNewProduct && !_this.state.correctCanged) {
+                _this.setState({ correct: code, chosenProdName: null, chosenProdPrice: null });
 
                 for (var i = 0; i < _this.props.list.length; i++) {
                     for (var key in _this.props.list[i]) {
@@ -25452,14 +25455,16 @@ var ShopList = function (_React$Component) {
                     }
                 }
             }
-            _this.setState({ correct: false });
-        }, _this.turnColor = function (arg) {
-            if (!_this.state.addNewProduct && !_this.state.correct) {
+            _this.setState({ correct: false, correctCanged: false });
+        }, _this.turnColor = function (arg, bool) {
+            if (!_this.state.addNewProduct && !_this.state.correctCanged) {
                 _this.setState({ makeColor: arg });
-                for (var i = 0; i < _this.props.list.length; i++) {
-                    if (_this.props.list[i].code == arg) {
-                        _this.setState({ chosenProdName: _this.props.list[i].name });
-                        _this.setState({ chosenProdPrice: _this.props.list[i].price });
+                if (bool) {
+                    _this.setState({ correct: false });
+                    for (var i = 0; i < _this.props.list.length; i++) {
+                        if (_this.props.list[i].code == arg) {
+                            _this.setState({ chosenProdName: _this.props.list[i].name, chosenProdPrice: _this.props.list[i].price });
+                        }
                     }
                 }
             }
@@ -25541,10 +25546,12 @@ var ShopList = function (_React$Component) {
                 ),
                 _react2.default.createElement(_ModeType2.default, { chosenProdName: this.state.chosenProdName, chosenProdPrice: this.state.chosenProdPrice,
                     cbAddProduct: this.addProduct, addNewProduct: this.state.addNewProduct,
-                    cbCancelNew: this.cancelNew, cbAddNewProduct: this.addNewProduct, correct: this.state.correct,
+                    cbCancelNew: this.cancelNew, cbAddNewProduct: this.addNewProduct,
+                    correct: this.state.correct, correctCanged: this.state.correctCanged,
                     correctName: this.state.correctName, correctPrice: this.state.correctPrice,
                     correctURL: this.state.correctURL, correctQuantity: this.state.correctQuantity,
-                    correctCode: this.state.correctCode, cbCorrectProduct: this.correctProduct })
+                    correctCode: this.state.correctCode, cbCorrectProduct: this.correctProduct,
+                    cbSetChanged: this.setChanged })
             );
         }
     }]);
@@ -26535,13 +26542,14 @@ var TableItem = function (_React$Component) {
         return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = TableItem.__proto__ || Object.getPrototypeOf(TableItem)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
             deleteNumber: null
         }, _this.turnColor = function () {
-            _this.props.cbTurnColor(_this.props.code);
+            _this.props.cbTurnColor(_this.props.code, true);
         }, _this.deleteStr = function (EO) {
             EO.stopPropagation();
             _this.props.cbDeleteString(_this.props.code);
         }, _this.correct = function (EO) {
             EO.stopPropagation();
             _this.props.cbCorrect(_this.props.code);
+            _this.props.cbTurnColor(_this.props.code, false);
         }, _temp), _possibleConstructorReturn(_this, _ret);
     }
 
@@ -26644,6 +26652,16 @@ var ModeType = function (_React$Component) {
         }
 
         return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = ModeType.__proto__ || Object.getPrototypeOf(ModeType)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+            getName: _this.props.correctName,
+            name: null,
+            getPrice: _this.props.correctPrice,
+            price: null,
+            getURL: _this.props.correctURL,
+            URL: null,
+            getQuantity: _this.props.correctQuantity,
+            quantity: null,
+            startCorrect: false,
+            correctName: null,
             validCorrectName: null,
             validCorrectPrice: null,
             validCorrectURL: null,
@@ -26651,7 +26669,8 @@ var ModeType = function (_React$Component) {
             validNewName: null,
             validNewPrice: null,
             validNewURL: null,
-            validNewQuantity: null
+            validNewQuantity: null,
+            checkValid: false
         }, _this.addProduct = function () {
             _this.props.cbAddProduct();
             _this.setState({
@@ -26662,6 +26681,11 @@ var ModeType = function (_React$Component) {
             });
         }, _this.cancelProduct = function () {
             _this.props.cbCancelNew();
+            if (_this.state.startCorrect) {
+                _this.setState({ startCorrect: false, name: _this.props.correctName, price: _this.props.correctPrice,
+                    URL: _this.props.correctURL, quantity: _this.props.correctQuantity,
+                    validCorrectName: null, validCorrectPrice: null, validCorrectURL: null, validCorrectQuantity: null });
+            }
         }, _this.addNewProduct = function () {
             if (!_this.state.validNewName && !_this.state.validNewPrice && !_this.state.validNewURL && !_this.state.validNewQuantity) {
                 var newName = document.getElementById('newName').value;
@@ -26682,53 +26706,85 @@ var ModeType = function (_React$Component) {
                 var correctProduct = { code: code, name: newName, price: newPrice, URL: newURL, number: newQuantity };
                 _this.props.cbCorrectProduct(correctProduct);
             }
-        }, _this.validName = function () {
+        }, _this.validName = function (EO) {
+            _this.props.cbSetChanged();
+
+            if (_this.state.getName !== _this.props.correctName) {
+                _this.setState({ getName: _this.props.correctName });
+            }
+
+            _this.setState({ name: EO.target.value, startCorrect: true });
+
             if (document.getElementById('correctName').value == 0) {
-                _this.setState({ validCorrectName: true });
+                _this.setState({ validCorrectName: true, checkValid: true });
             } else {
-                _this.setState({ validCorrectName: null });
+                _this.setState({ validCorrectName: null, checkValid: false });
             }
-        }, _this.validPrice = function () {
+        }, _this.validPrice = function (EO) {
+            _this.props.cbSetChanged();
+
+            if (_this.state.getPrice !== _this.props.correctPrice) {
+                _this.setState({ getPrice: _this.props.correctPrice });
+            }
+
+            _this.setState({ price: EO.target.value, startCorrect: true });
+
             if (document.getElementById('correctPrice').value == 0) {
-                _this.setState({ validCorrectPrice: true });
+                _this.setState({ validCorrectPrice: true, checkValid: true });
             } else {
-                _this.setState({ validCorrectPrice: null });
+                _this.setState({ validCorrectPrice: null, checkValid: false });
             }
-        }, _this.validURL = function () {
+        }, _this.validURL = function (EO) {
+            _this.props.cbSetChanged();
+
+            if (_this.state.getURL !== _this.props.correctURL) {
+                _this.setState({ getURL: _this.props.correctURL });
+            }
+
+            _this.setState({ URL: EO.target.value, startCorrect: true });
+
             if (document.getElementById('correctURL').value == 0) {
-                _this.setState({ validCorrectURL: true });
+                _this.setState({ validCorrectURL: true, checkValid: true });
             } else {
-                _this.setState({ validCorrectURL: null });
+                _this.setState({ validCorrectURL: null, checkValid: false });
             }
-        }, _this.validQuantity = function () {
+        }, _this.validQuantity = function (EO) {
+            _this.props.cbSetChanged();
+
+            if (_this.state.getQuantity !== _this.props.correctQuantity) {
+                _this.setState({ getQuantity: _this.props.correctQuantity });
+            }
+
+            _this.setState({ quantity: EO.target.value, startCorrect: true });
+
             if (document.getElementById('correctQuantity').value == 0) {
-                _this.setState({ validCorrectQuantity: true });
+                _this.setState({ validCorrectQuantity: true, checkValid: true });
             } else {
-                _this.setState({ validCorrectQuantity: null });
+                _this.setState({ validCorrectQuantity: null, checkValid: false });
             }
         }, _this.validNewName = function () {
             if (document.getElementById('newName').value == 0) {
-                _this.setState({ validNewName: true });
+                _this.setState({ validNewName: true, checkValid: true });
             } else {
-                _this.setState({ validNewName: null });
+                _this.setState({ validNewName: null, checkValid: false });
             }
         }, _this.validNewPrice = function () {
             if (document.getElementById('newPrice').value == 0) {
-                _this.setState({ validNewPrice: true });
+                _this.setState({ validNewPrice: true, checkValid: true });
             } else {
-                _this.setState({ validNewPrice: null });
+                _this.setState({ validNewPrice: null, checkValid: false });
             }
         }, _this.validNewURL = function () {
             if (document.getElementById('newURL').value == 0) {
-                _this.setState({ validNewURL: true });
+                _this.setState({ validNewURL: true, checkValid: true });
             } else {
-                _this.setState({ validNewURL: null });
+                _this.setState({ validNewURL: null, checkValid: false });
             }
         }, _this.validNewQuantity = function () {
             if (document.getElementById('newQuantity').value == 0) {
-                _this.setState({ validNewQuantity: true });
+                _this.setState({ validNewQuantity: true, checkValid: true });
             } else {
-                _this.setState({ validNewQuantity: null });
+                _this.setState({ validNewQuantity: null, checkValid: false });
             }
         }, _temp), _possibleConstructorReturn(_this, _ret);
     }
@@ -26736,11 +26792,22 @@ var ModeType = function (_React$Component) {
     _createClass(ModeType, [{
         key: 'render',
         value: function render() {
+            if (this.state.validNewName || this.state.validNewPrice || this.state.validNewURL || this.state.validNewQuantity) {
+                var buttonClass1 = "unActive";
+            } else {
+                var buttonClass1 = "usual";
+            }
+            if (this.state.validCorrectQuantity || this.state.validCorrectURL || this.state.validCorrectName || this.state.validCorrectPrice) {
+                var buttonClass2 = "unActive";
+            } else {
+                var buttonClass2 = "usual";
+            }
+
             return _react2.default.createElement(
                 'div',
                 null,
                 _react2.default.createElement('input', { type: 'button', value: 'New product', onClick: this.addProduct }),
-                this.props.chosenProdName && _react2.default.createElement(
+                this.props.chosenProdName && !this.props.correctCanged && _react2.default.createElement(
                     'div',
                     null,
                     'name: ' + this.props.chosenProdName + '; price: ' + this.props.chosenProdPrice
@@ -26750,7 +26817,7 @@ var ModeType = function (_React$Component) {
                     null,
                     'Name: ',
                     ' ',
-                    _react2.default.createElement('input', { type: 'text', id: 'newName', onBlur: this.validNewName }),
+                    _react2.default.createElement('input', { type: 'text', id: 'newName', onChange: this.validNewName }),
                     this.state.validNewName && _react2.default.createElement(
                         'span',
                         { className: 'valid' },
@@ -26759,7 +26826,7 @@ var ModeType = function (_React$Component) {
                     _react2.default.createElement('br', null),
                     'Price: ',
                     ' ',
-                    _react2.default.createElement('input', { type: 'text', id: 'newPrice', onBlur: this.validNewPrice }),
+                    _react2.default.createElement('input', { type: 'text', id: 'newPrice', onChange: this.validNewPrice }),
                     this.state.validNewPrice && _react2.default.createElement(
                         'span',
                         { className: 'valid' },
@@ -26768,7 +26835,7 @@ var ModeType = function (_React$Component) {
                     _react2.default.createElement('br', null),
                     'URL: ',
                     ' ',
-                    _react2.default.createElement('input', { type: 'text', id: 'newURL', onBlur: this.validNewURL }),
+                    _react2.default.createElement('input', { type: 'text', id: 'newURL', onChange: this.validNewURL }),
                     this.state.validNewURL && _react2.default.createElement(
                         'span',
                         { className: 'valid' },
@@ -26777,14 +26844,14 @@ var ModeType = function (_React$Component) {
                     _react2.default.createElement('br', null),
                     'Quantity: ',
                     ' ',
-                    _react2.default.createElement('input', { type: 'text', id: 'newQuantity', onBlur: this.validNewQuantity }),
+                    _react2.default.createElement('input', { type: 'text', id: 'newQuantity', onChange: this.validNewQuantity }),
                     this.state.validNewQuantity && _react2.default.createElement(
                         'span',
                         { className: 'valid' },
                         'Please, fill the field!'
                     ),
                     _react2.default.createElement('br', null),
-                    _react2.default.createElement('input', { type: 'button', value: 'Add', onClick: this.addNewProduct }),
+                    _react2.default.createElement('input', { type: 'button', className: buttonClass1, value: 'Add', onClick: this.addNewProduct }),
                     _react2.default.createElement('input', { type: 'button', value: 'Cancel', onClick: this.cancelProduct })
                 ),
                 this.props.correct && _react2.default.createElement(
@@ -26792,8 +26859,8 @@ var ModeType = function (_React$Component) {
                     null,
                     'Name: ',
                     ' ',
-                    _react2.default.createElement('input', { type: 'text', id: 'correctName', defaultValue: this.props.correctName,
-                        onBlur: this.validName }),
+                    _react2.default.createElement('input', { type: 'text', id: 'correctName', value: this.state.getName === this.props.correctName ? this.state.name : this.props.correctName,
+                        onChange: this.validName }),
                     this.state.validCorrectName && _react2.default.createElement(
                         'span',
                         { className: 'valid' },
@@ -26802,8 +26869,8 @@ var ModeType = function (_React$Component) {
                     _react2.default.createElement('br', null),
                     'Price: ',
                     ' ',
-                    _react2.default.createElement('input', { type: 'text', id: 'correctPrice', defaultValue: this.props.correctPrice,
-                        onBlur: this.validPrice }),
+                    _react2.default.createElement('input', { type: 'text', id: 'correctPrice', value: this.state.getPrice === this.props.correctPrice ? this.state.price : this.props.correctPrice,
+                        onChange: this.validPrice }),
                     this.state.validCorrectPrice && _react2.default.createElement(
                         'span',
                         { className: 'valid' },
@@ -26812,8 +26879,8 @@ var ModeType = function (_React$Component) {
                     _react2.default.createElement('br', null),
                     'URL: ',
                     ' ',
-                    _react2.default.createElement('input', { type: 'text', id: 'correctURL', defaultValue: this.props.correctURL,
-                        onBlur: this.validURL }),
+                    _react2.default.createElement('input', { type: 'text', id: 'correctURL', value: this.state.getURL === this.props.correctURL ? this.state.URL : this.props.correctURL,
+                        onChange: this.validURL }),
                     this.state.validCorrectURL && _react2.default.createElement(
                         'span',
                         { className: 'valid' },
@@ -26822,15 +26889,15 @@ var ModeType = function (_React$Component) {
                     _react2.default.createElement('br', null),
                     'Quantity: ',
                     ' ',
-                    _react2.default.createElement('input', { type: 'text', id: 'correctQuantity', defaultValue: this.props.correctQuantity,
-                        onBlur: this.validQuantity }),
+                    _react2.default.createElement('input', { type: 'text', id: 'correctQuantity', value: this.state.getQuantity === this.props.correctQuantity ? this.state.quantity : this.props.correctQuantity,
+                        onChange: this.validQuantity }),
                     this.state.validCorrectQuantity && _react2.default.createElement(
                         'span',
                         { className: 'valid' },
                         'Please, fill the field!'
                     ),
                     _react2.default.createElement('br', null),
-                    _react2.default.createElement('input', { type: 'button', value: 'Save', onClick: this.correctProduct }),
+                    _react2.default.createElement('input', { type: 'button', className: buttonClass2, value: 'Save', onClick: this.correctProduct }),
                     _react2.default.createElement('input', { type: 'button', value: 'Cancel', onClick: this.cancelProduct })
                 )
             );
