@@ -1,0 +1,13 @@
+﻿div.MobileClient
+{
+  padding: 2px 0;
+}
+
+.active {
+  background-color: green;
+  text-align: center;
+}
+.blocked {
+  background-color: red;
+  text-align: center;
+}
