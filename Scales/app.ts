@@ -11,20 +11,20 @@ class Scales {
         this.addedProducts.push(prod);
     }
 
-    getSumScale():void {
+    getSumScale():number {
         let sum:number = 0;
         for (let i:number = 0; i < this.addedProducts.length; i++) {
             sum += this.addedProducts[i].getScale();
         }
-        console.log('Общий вес продуктов на весах: ' + sum);
+        return sum;
     }
 
-    getNameList():void {
+    getNameList():Array<string>  {
         let allName:Array<string> = [];
         for (let i:number = 0; i < this.addedProducts.length; i++) {
             allName.push(this.addedProducts[i].getName());
         }
-        console.log("Перечень всех продуктов на весах: " + allName);
+        return allName;
     }
 
 }
@@ -79,9 +79,9 @@ let apple1:Apple = new Apple ('Северный синап', 300);
 let apple2:Apple = new Apple ('Мельба', 100);
 let apple3:Apple = new Apple ('Богатырь', 500);
 
-let tomato1:Apple = new Tomato ('Снежный барс', 200);
-let tomato2:Apple = new Tomato ('Гаспачо', 600);
-let tomato3:Apple = new Tomato ('Даренка', 400);
+let tomato1:Tomato = new Tomato ('Снежный барс', 200);
+let tomato2:Tomato = new Tomato ('Гаспачо', 600);
+let tomato3:Tomato = new Tomato ('Даренка', 400);
 
 let scale: Scales = new Scales();
 scale.add(apple1);
@@ -90,5 +90,5 @@ scale.add(apple3);
 scale.add(tomato1);
 scale.add(tomato2);
 scale.add(tomato3);
-scale.getSumScale();
-scale.getNameList();
+console.log('Общий вес продуктов на весах: ' + scale.getSumScale());
+console.log("Названия всех продуктов на весах: " + scale.getNameList());

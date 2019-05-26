@@ -23,14 +23,14 @@ var Scales = /** @class */ (function () {
         for (var i = 0; i < this.addedProducts.length; i++) {
             sum += this.addedProducts[i].getScale();
         }
-        console.log('Общий вес продуктов на весах: ' + sum);
+        return sum;
     };
     Scales.prototype.getNameList = function () {
         var allName = [];
         for (var i = 0; i < this.addedProducts.length; i++) {
             allName.push(this.addedProducts[i].getName());
         }
-        console.log("Перечень всех продуктов на весах: " + allName);
+        return allName;
     };
     return Scales;
 }());
@@ -84,5 +84,5 @@ scale.add(apple3);
 scale.add(tomato1);
 scale.add(tomato2);
 scale.add(tomato3);
-scale.getSumScale();
-scale.getNameList();
+console.log('Общий вес продуктов на весах: ' + scale.getSumScale());
+console.log("Названия всех продуктов на весах: " + scale.getNameList());
