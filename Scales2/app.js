@@ -62,3 +62,4 @@ scale.add(tomato2);
 scale.add(tomato3);
 console.log('Общий вес продуктов на весах: ' + scale.getSumScale());
 console.log("Названия всех продуктов на весах: " + scale.getNameList());
+//# sourceMappingURL=app.js.map
