@@ -46,7 +46,7 @@ class Scales <StorageEngine extends IStorageEngine> {
         let itemslength = this.items.getCount();
         for (let i:number = 0; i < itemslength; i++) {
             let getIndex = this.items.getItem(i);
-            allName.push(getIndex.getName());
+            allName.push(getIndex.getName() );
         }
         return allName;
     }
@@ -75,27 +75,53 @@ class ScalesStorageEngineArray implements IStorageEngine {
 
 class ScalesStorageEngineLocalStorage implements IStorageEngine {
     
-    storage: Array<IProduct>;
     name: string;
     constructor(_name:string) {
         this.name = _name;
-        this.storage = [];
     }
 
     addItem (item:IProduct):void {
-        this.storage.push(item);
-        localStorage[this.name] = JSON.stringify(this.storage);
+        if (!localStorage[this.name]) {
+            let storage = [];
+            storage.push(item);  
+            localStorage[this.name] = JSON.stringify(storage);
+        } else {  
+            let storage = JSON.parse(localStorage.getItem(this.name));
+            storage.push(item);
+            localStorage[this.name] = JSON.stringify(storage);
+        }
     }
 
     getItem (index:number):IProduct {
-        return this.storage[index];
+        let storage = JSON.parse(localStorage.getItem(this.name));
+        return storage[index];
     }
 
     getCount ():number {
-        return this.storage.length;
+        let storage = JSON.parse(localStorage.getItem(this.name));
+        return storage.length;
     }
 
 }
+/*
+Object.defineProperty(Object.prototype, 'getScale', {
+    get: function() {
+        return this.scale;
+    }
+});
+
+Object.defineProperty(Object.prototype, 'getName', {
+    get: function() {
+        return this.name;
+    }
+});*/
+
+Object.prototype.getName = function () {    
+    return this.name;
+};
+Object.prototype.getScale = function () {    
+    return this.scale;
+};
 
 class Product implements IProduct {
 

@@ -52,20 +52,47 @@ var ScalesStorageEngineArray = /** @class */ (function () {
 var ScalesStorageEngineLocalStorage = /** @class */ (function () {
     function ScalesStorageEngineLocalStorage(_name) {
         this.name = _name;
-        this.storage = [];
     }
     ScalesStorageEngineLocalStorage.prototype.addItem = function (item) {
-        this.storage.push(item);
-        localStorage[this.name] = JSON.stringify(this.storage);
+        if (!localStorage[this.name]) {
+            var storage = [];
+            storage.push(item);
+            localStorage[this.name] = JSON.stringify(storage);
+        }
+        else {
+            var storage = JSON.parse(localStorage.getItem(this.name));
+            storage.push(item);
+            localStorage[this.name] = JSON.stringify(storage);
+        }
     };
     ScalesStorageEngineLocalStorage.prototype.getItem = function (index) {
-        return this.storage[index];
+        var storage = JSON.parse(localStorage.getItem(this.name));
+        return storage[index];
     };
     ScalesStorageEngineLocalStorage.prototype.getCount = function () {
-        return this.storage.length;
+        var storage = JSON.parse(localStorage.getItem(this.name));
+        return storage.length;
     };
     return ScalesStorageEngineLocalStorage;
 }());
+/*
+Object.defineProperty(Object.prototype, 'getScale', {
+    get: function() {
+        return this.scale;
+    }
+});
+
+Object.defineProperty(Object.prototype, 'getName', {
+    get: function() {
+        return this.name;
+    }
+});*/
+Object.prototype.getName = function () {
+    return this.name;
+};
+Object.prototype.getScale = function () {
+    return this.scale;
+};
 var Product = /** @class */ (function () {
     function Product(_name, _scale) {
         this.name = _name;
