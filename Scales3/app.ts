@@ -1,35 +1,51 @@
 interface IStorageEngine {
-    addItem(item:Array<object>):void;
+    addItem(item:IProduct):void;
     
-    getItem(index:number):object;
+    getItem(index:number):IProduct;
     
     getCount():number;
+}
+interface IProduct {
+    getName():string;
+    getScale():number;
 }
 
 class Scales <StorageEngine extends IStorageEngine> {
 
-    items: StorageEngine[];
+    items: StorageEngine;
 
-    constructor() {
-        this.items=[];
+    constructor(scoreType:StorageEngine) {
+        this.items=scoreType;
     }
 
-    getSumScale(type:StorageEngine):number {
+    addItem(item:IProduct):void{
+        this.items.addItem(item);
+    };
+    
+    getItem(index:number):IProduct{
+        return this.items.getItem(index);
+    };
+    
+    getCount():number{
+        return this.items.getCount();
+    };
+
+    getSumScale():number {
         let sum:number = 0;
-        let typelength = type.getCount();
-        for (let i:number = 0; i < typelength; i++) {
-            let getIndex = type.getItem(i);
+        let itemslength = this.items.getCount();
+        for (let i:number = 0; i < itemslength; i++) {
+            let getIndex = this.items.getItem(i);
             sum += getIndex.getScale();
         }
 
         return sum;
     }
 
-    getNameList(type:StorageEngine):Array<string> {
+    getNameList():Array<string> {
         let allName:Array<string> = [];
-        let typelength = type.getCount();
-        for (let i:number = 0; i < typelength; i++) {
-            let getIndex = type.getItem(i);
+        let itemslength = this.items.getCount();
+        for (let i:number = 0; i < itemslength; i++) {
+            let getIndex = this.items.getItem(i);
             allName.push(getIndex.getName());
         }
         return allName;
@@ -38,16 +54,16 @@ class Scales <StorageEngine extends IStorageEngine> {
 }
 
 class ScalesStorageEngineArray implements IStorageEngine {
-    items:Array<object>;
+    items:Array<IProduct>;
     constructor() {
         this.items = [];
     }
 
-    addItem (item:Array<object>):void {
+    addItem (item:IProduct):void {
         this.items.push(item);
     }
 
-    getItem (index:number):object {
+    getItem (index:number):IProduct {
         return this.items[index];
     }
 
@@ -57,7 +73,31 @@ class ScalesStorageEngineArray implements IStorageEngine {
 
 }
 
-class Product {
+class ScalesStorageEngineLocalStorage implements IStorageEngine {
+    
+    storage: Array<IProduct>;
+    name: string;
+    constructor(_name:string) {
+        this.name = _name;
+        this.storage = [];
+    }
+
+    addItem (item:IProduct):void {
+        this.storage.push(item);
+        localStorage[this.name] = JSON.stringify(this.storage);
+    }
+
+    getItem (index:number):IProduct {
+        return this.storage[index];
+    }
+
+    getCount ():number {
+        return this.storage.length;
+    }
+
+}
+
+class Product implements IProduct {
 
     private name: string;
     private scale: number;
@@ -77,13 +117,20 @@ class Product {
 
 }
 
-let q = new Product('qwerty', 25);
-let a = new Product('qwerty', 35);
-let z = new Product('qwerty', 45);
-let w = new ScalesStorageEngineArray();
-w.addItem(q);
-w.addItem(a);
-w.addItem(z);
-let c = new Scales<ScalesStorageEngineArray>();
-console.log(c.getSumScale(w));
-console.log('hello');
+let prod1 = new Product('one', 25);
+let prod2 = new Product('two', 35);
+let prod3 = new Product('three', 45);
+let scaleArray = new ScalesStorageEngineArray();
+let arrayScale = new Scales<ScalesStorageEngineArray>(scaleArray);
+arrayScale.addItem(prod1);
+arrayScale.addItem(prod2);
+arrayScale.addItem(prod3);
+console.log('Общий вес по массиву: ' + arrayScale.getSumScale());
+console.log("Наименования товаров по массиву: " + arrayScale.getNameList());
+
+let scalesLocalStorage = new ScalesStorageEngineLocalStorage("score");
+let localStorageScale = new Scales<ScalesStorageEngineLocalStorage>(scalesLocalStorage);
+localStorageScale.addItem(prod1);
+localStorageScale.addItem(prod2);
+console.log('Общий вес по localStorage: ' + localStorageScale.getSumScale());
+console.log("Наименования товаров по localStorage: " + localStorageScale.getNameList());
