@@ -94,7 +94,8 @@ class ScalesStorageEngineLocalStorage implements IStorageEngine {
 
     getItem (index:number):IProduct {
         let storage = JSON.parse(localStorage.getItem(this.name));
-        return storage[index];
+        //return storage[index];
+        return new Product(storage[index].name, storage[index].scale);
     }
 
     getCount ():number {
@@ -103,25 +104,6 @@ class ScalesStorageEngineLocalStorage implements IStorageEngine {
     }
 
 }
-/*
-Object.defineProperty(Object.prototype, 'getScale', {
-    get: function() {
-        return this.scale;
-    }
-});
-
-Object.defineProperty(Object.prototype, 'getName', {
-    get: function() {
-        return this.name;
-    }
-});*/
-
-Object.prototype.getName = function () {    
-    return this.name;
-};
-Object.prototype.getScale = function () {    
-    return this.scale;
-};
 
 class Product implements IProduct {
 

@@ -67,7 +67,8 @@ var ScalesStorageEngineLocalStorage = /** @class */ (function () {
     };
     ScalesStorageEngineLocalStorage.prototype.getItem = function (index) {
         var storage = JSON.parse(localStorage.getItem(this.name));
-        return storage[index];
+        //return storage[index];
+        return new Product(storage[index].name, storage[index].scale);
     };
     ScalesStorageEngineLocalStorage.prototype.getCount = function () {
         var storage = JSON.parse(localStorage.getItem(this.name));
@@ -86,13 +87,14 @@ Object.defineProperty(Object.prototype, 'getName', {
     get: function() {
         return this.name;
     }
-});*/
+});
+
 Object.prototype.getName = function () {
     return this.name;
 };
 Object.prototype.getScale = function () {
     return this.scale;
-};
+};*/
 var Product = /** @class */ (function () {
     function Product(_name, _scale) {
         this.name = _name;
@@ -122,3 +124,4 @@ localStorageScale.addItem(prod1);
 localStorageScale.addItem(prod2);
 console.log('Общий вес по localStorage: ' + localStorageScale.getSumScale());
 console.log("Наименования товаров по localStorage: " + localStorageScale.getNameList());
+//localStorage.clear();
